@@ -11,5 +11,5 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     shiny,
-    data.table,
+    ggplot2,
     rhandsontable

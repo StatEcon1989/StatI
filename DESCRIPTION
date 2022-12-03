@@ -1,0 +1,15 @@
+Package: RubstatI
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Steffen Koehler
+Maintainer: Steffen Koehler <steffen.koehler@rub.de>
+Description: Das Paket veranschaulicht die Datenlage C mittels einer Shiny App.
+License: CC BY 4.0
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    shiny,
+    ggplot2,
+    rhandsontable
+RoxygenNote: 7.1.2

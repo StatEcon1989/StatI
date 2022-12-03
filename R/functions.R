@@ -13,24 +13,20 @@
 #   Check Package:             'Ctrl + Shift + E'
 #   Test Package:              'Ctrl + Shift + T'
 
-hello <- function() {
-  print("Hello, world!")
-}
-
 complete_datenlage <- function(dt){
   n_row <- nrow(dt)
   dt$H <- cumsum(dt$h)
   n <- dt$H[n_row]
   dt$f <- dt$h / n
   dt$F <- dt$H / n
-  dt$x_mid <- dt$from + (dt$to - dt$from) / 2
+  dt$Klassenmittelpunkt<- dt$Untergrenze + (dt$Obergrenze - dt$Untergrenze) / 2
   return(dt)
 }
 
 
 datenlage_C <- function(dt){
   n_row <- nrow(dt)
-  x <- c(dt$from, dt$to[n_row])
+  x <- c(dt$Untergrenze, dt$Obergrenze[n_row])
   y <- c(0, dt$F)
   F_hat <-
     stats::approxfun(
@@ -42,8 +38,8 @@ datenlage_C <- function(dt){
   F_hat_inv <- function (y) {
     stats::uniroot((function (x)
       F_hat(x) - y),
-      lower = dt$from[1],
-      upper = dt$to[n_row],
+      lower = min(dt$Untergrenze),
+      upper = dt$Obergrenze[n_row],
       tol = 1e-6
     )$root[1]
   }

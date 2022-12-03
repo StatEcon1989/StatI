@@ -84,9 +84,9 @@ server <- function(input, output, session) {
       values$x <- c(min(min(x) - 1, floor(0.8 * min(x))), x, ceiling(1.2 * max(x)))
       # plot definitions
       values$f_plot <- ggplot2::ggplot(data.frame(xvals = x, yvals = values$F_hat(x)), ggplot2::aes(xvals, yvals)) +
-        ggplot2::geom_line(size = 1.1, color = "blue") + xlab("x") + ylab(expression(widehat(F)(x)))
+        ggplot2::geom_line(size = 1.1, color = "blue") + ggplot2::xlab("x") + ggplot2::ylab(expression(widehat(F)(x)))
       values$quantile_plot <- ggplot2::ggplot(data.frame(Quantil = c(0, x_inv), xvals = c(min(values$data$Untergrenze), sapply(x_inv, values$F_hat_inv))), ggplot2::aes(Quantil, xvals)) +
-        ggplot2::geom_line(size = 1.1, color = "blue") + xlab("q") + ylab(expression(widehat(F)^-1*(q)))
+        ggplot2::geom_line(size = 1.1, color = "blue") + ggplot2::xlab("q") + ggplot2::ylab(expression(widehat(F)^-1*(q)))
     } else {
       values$f_plot <- NULL
       values$quantile_plot <- NULL
@@ -102,7 +102,7 @@ server <- function(input, output, session) {
     output$F_hat <- renderPlot(values$f_plot +
                                  ggplot2::geom_segment(ggplot2::aes(x = x, y = -Inf, xend = x, yend = y), color = "red") +
                                  ggplot2::geom_segment(ggplot2::aes(x = -Inf, y = y, xend = x, yend = y), color = "red") +
-                                 geom_label(aes(x = (x - min(values$data$Untergrenze)) / 2, y = y, label = round(y, 2))))
+                                 ggplot2::geom_label(aes(x = (x - min(values$data$Untergrenze)) / 2, y = y, label = round(y, 2))))
   })
   observeEvent(c(values$quantile_plot, input$emp.Quantilfunktion), {
     req(values$quantile_plot)
@@ -111,7 +111,7 @@ server <- function(input, output, session) {
     output$F_hat_inv <- renderPlot(values$quantile_plot +
                                      ggplot2::geom_segment(ggplot2::aes(x = x, y = -Inf, xend = x, yend = y), color = "red") +
                                      ggplot2::geom_segment(ggplot2::aes(x = -Inf, y = y, xend = x, yend = y), color = "red") +
-                                     geom_label(aes(x = x / 2, y = y, label = round(y, 2))))
+                                     ggplot2::geom_label(aes(x = x / 2, y = y, label = round(y, 2))))
   })
 
   # the input/output table and its properties

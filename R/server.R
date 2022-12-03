@@ -8,6 +8,47 @@
 #
 #'@import shiny
 server <- function(input, output, session) {
+  # helper functions
+  complete_datenlage <- function(dt) {
+    n_row <- nrow(dt)
+    dt$H <- cumsum(dt$h)
+    n <- dt$H[n_row]
+    dt$f <- dt$h / n
+    dt$F <- dt$H / n
+    dt$Klassenmittelpunkt <- dt$Untergrenze + (dt$Obergrenze - dt$Untergrenze) / 2
+    return(dt)
+  }
+
+  validata_data <- function(dt) {
+    !any(is.na(dt[, c("Untergrenze", "Obergrenze", "h")])) &&
+      all(dt$Untergrenze < dt$Obergrenze) &&
+      all(dt$Untergrenze[-1] == dt$Obergrenze[-nrow(dt)])
+  }
+
+  datenlage_C <- function(dt) {
+    n_row <- nrow(dt)
+    x <- c(dt$Untergrenze, dt$Obergrenze[n_row])
+    y <- c(0, dt$F)
+    F_hat <-
+      stats::approxfun(
+        x = x,
+        y = y,
+        yleft = 0,
+        yright = 1
+      )
+
+    F_hat_inv <- function(y) {
+      stats::uniroot((function(x)
+        F_hat(x) - y),
+                     lower = min(dt$Untergrenze),
+                     upper = dt$Obergrenze[n_row],
+                     tol = 1e-6
+      )$root[1]
+    }
+
+    return(list(F_hat = F_hat, F_hat_inv = F_hat_inv, x = x))
+  }
+
   dt <- data.frame(Untergrenze = as.numeric(0:5), Obergrenze = as.numeric(1:6), h = c(10, 20, 5, 30, 15, 20))
   x_inv <- seq(from = 0.01, to = 1, by = 0.01)
 
@@ -23,7 +64,7 @@ server <- function(input, output, session) {
       updateSliderInput(inputId = "emp.Verteilung_an_stelle", min = min(values$data$Untergrenze), max = max(values$data$Obergrenze)
       )
     })
-    output$datenlage <- renderRHandsontable({
+    output$datenlage <- rhandsontable::renderRHandsontable({
       hot <- rhandsontable::rhandsontable(values$data, readOnly = FALSE)
       hot <- rhandsontable::hot_context_menu(hot, allowColEdit = FALSE)
       hot <- rhandsontable::hot_col(hot, col = c("F", "f", "H", "Klassenmittelpunkt"), readOnly = TRUE)
@@ -43,9 +84,9 @@ server <- function(input, output, session) {
       values$x <- c(min(min(x) - 1, floor(0.8 * min(x))), x, ceiling(1.2 * max(x)))
       # plot definitions
       values$f_plot <- ggplot2::ggplot(data.frame(xvals = x, yvals = values$F_hat(x)), ggplot2::aes(xvals, yvals)) +
-        ggplot2::geom_line(size = 1.1, color = "blue")
+        ggplot2::geom_line(size = 1.1, color = "blue") + xlab("x") + ylab(expression(widehat(F)(x)))
       values$quantile_plot <- ggplot2::ggplot(data.frame(Quantil = c(0, x_inv), xvals = c(min(values$data$Untergrenze), sapply(x_inv, values$F_hat_inv))), ggplot2::aes(Quantil, xvals)) +
-        ggplot2::geom_line(size = 1.1, color = "blue")
+        ggplot2::geom_line(size = 1.1, color = "blue") + xlab("q") + ylab(expression(widehat(F)^-1*(q)))
     } else {
       values$f_plot <- NULL
       values$quantile_plot <- NULL

@@ -12,9 +12,9 @@ ui <- fluidPage(
   titlePanel("Datenlage C"),
   sidebarLayout(
     sidebarPanel = sidebarPanel(width = 4,
-                                sliderInput("emp.Verteilung_an_stelle", label = "F(x)",
+                                sliderInput("emp.Verteilung_an_stelle", label = "x: F(x)",
                                             min = 0, max = 4, step = 0.01, value = 3),
-                                sliderInput("emp.Quantilfunktion", label = "F_inv(x)",
+                                sliderInput("emp.Quantilfunktion", label = HTML(paste0("q: F",tags$sup("-1"), '(q)')),
                                             min = 0, max = 1, step = 0.01, value = 0.5),
                                 rhandsontable::rHandsontableOutput('datenlage'),
                                 actionButton("reset", label = "Reset")

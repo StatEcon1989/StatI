@@ -84,9 +84,9 @@ server <- function(input, output, session) {
       values$x <- c(min(min(x) - 1, floor(0.8 * min(x))), x, ceiling(1.2 * max(x)))
       # plot definitions
       values$f_plot <- ggplot2::ggplot(data.frame(xvals = x, yvals = values$F_hat(x)), ggplot2::aes(xvals, yvals)) +
-        ggplot2::geom_line(size = 1.1, color = "blue") + xlab("x") + ylab(expression(widehat(F)(x)))
+        ggplot2::geom_line(size = 1.1, color = "blue") + ggplot2::xlab("x") + ggplot2::ylab(expression(widehat(F)(x)))
       values$quantile_plot <- ggplot2::ggplot(data.frame(Quantil = c(0, x_inv), xvals = c(min(values$data$Untergrenze), sapply(x_inv, values$F_hat_inv))), ggplot2::aes(Quantil, xvals)) +
-        ggplot2::geom_line(size = 1.1, color = "blue") + xlab("q") + ylab(expression(widehat(F)^-1*(q)))
+        ggplot2::geom_line(size = 1.1, color = "blue") + ggplot2::xlab("q") + ggplot2::ylab(expression(widehat(F)^-1*(q)))
     } else {
       values$f_plot <- NULL
       values$quantile_plot <- NULL

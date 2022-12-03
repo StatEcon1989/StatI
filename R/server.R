@@ -8,7 +8,7 @@
 #
 #'@import shiny
 server <- function(input, output, session) {
-  dt <- data.frame(Untergrenze = 0:5, Obergrenze = 1:6, h = c(10, 20, 5, 30, 15, 20))
+  dt <- data.frame(Untergrenze = as.numeric(0:5), Obergrenze = as.numeric(1:6), h = c(10, 20, 5, 30, 15, 20))
   x_inv <- seq(from = 0.01, to = 1, by = 0.01)
 
   values <- reactiveValues(data = complete_datenlage(dt), f_plot = NULL, quantile_plot = NULL, x = NULL)

@@ -34,7 +34,7 @@ server <- function(input, output, session) {
 
   # update functions and plot objects conditional on data
   observeEvent(values$data, {
-    if (!any(is.na(values$data[, c("Untergrenze", "Obergrenze", "h")]))) {
+    if (validata_data(values$data)) {
       functions <- datenlage_C(values$data)
       # function definitions
       values$F_hat <- functions$F_hat
@@ -77,5 +77,11 @@ server <- function(input, output, session) {
     rhandsontable::hot_context_menu(hot, allowColEdit = FALSE)
     rhandsontable::hot_col(hot, col = c("F", "f", "H", "Klassenmittelpunkt"), readOnly = TRUE)
     hot
+  })
+  observeEvent(input$reset, {
+    values$data <- complete_datenlage(dt)
+    values$f_plot <- NULL
+    values$quantile_plot <- NULL
+    values$x <- NULL
   })
 }

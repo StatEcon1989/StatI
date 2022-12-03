@@ -42,8 +42,10 @@ server <- function(input, output, session) {
       x <- functions$x
       values$x <- c(min(min(x) - 1, floor(0.8 * min(x))), x, ceiling(1.2 * max(x)))
       # plot definitions
-      values$f_plot <- ggplot2::ggplot(data.frame(xvals = x, yvals = values$F_hat(x)), ggplot2::aes(xvals, yvals)) + ggplot2::geom_line()
-      values$quantile_plot <- ggplot2::ggplot(data.frame(Quantil = c(0, x_inv), xvals = c(min(values$data$Untergrenze), sapply(x_inv, values$F_hat_inv))), ggplot2::aes(Quantil, xvals)) + ggplot2::geom_line()
+      values$f_plot <- ggplot2::ggplot(data.frame(xvals = x, yvals = values$F_hat(x)), ggplot2::aes(xvals, yvals)) +
+        ggplot2::geom_line(size = 1.1, color = "blue")
+      values$quantile_plot <- ggplot2::ggplot(data.frame(Quantil = c(0, x_inv), xvals = c(min(values$data$Untergrenze), sapply(x_inv, values$F_hat_inv))), ggplot2::aes(Quantil, xvals)) +
+        ggplot2::geom_line(size = 1.1, color = "blue")
     } else {
       values$f_plot <- NULL
       values$quantile_plot <- NULL
@@ -57,16 +59,16 @@ server <- function(input, output, session) {
     y <- values$F_hat(x)
     # draw plot with
     output$F_hat <- renderPlot(values$f_plot +
-                                 ggplot2::geom_segment(ggplot2::aes(x = x, y = 0, xend = x, yend = y), color = "red") +
+                                 ggplot2::geom_segment(ggplot2::aes(x = x, y = -Inf, xend = x, yend = y), color = "red") +
                                  ggplot2::geom_segment(ggplot2::aes(x = -Inf, y = y, xend = x, yend = y), color = "red") +
-                                 geom_label(aes(x = (x - abs(values$x[1])) / 2, y = y, label = round(y, 2))))
+                                 geom_label(aes(x = (x - min(values$data$Untergrenze)) / 2, y = y, label = round(y, 2))))
   })
   observeEvent(c(values$quantile_plot, input$emp.Quantilfunktion), {
     req(values$quantile_plot)
     x <- input$emp.Quantilfunktion
     y <- values$F_hat_inv(x)
     output$F_hat_inv <- renderPlot(values$quantile_plot +
-                                     ggplot2::geom_segment(ggplot2::aes(x = x, y = min(values$data$Untergrenze), xend = x, yend = y), color = "red") +
+                                     ggplot2::geom_segment(ggplot2::aes(x = x, y = -Inf, xend = x, yend = y), color = "red") +
                                      ggplot2::geom_segment(ggplot2::aes(x = -Inf, y = y, xend = x, yend = y), color = "red") +
                                      geom_label(aes(x = x / 2, y = y, label = round(y, 2))))
   })

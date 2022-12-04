@@ -8,7 +8,7 @@
 #
 
 #'@import shiny
-ui <- fluidPage(
+ui <- fluidPage(theme = shinythemes::shinytheme("paper"),
   titlePanel("Datenlage C"),
   sidebarLayout(
     sidebarPanel = sidebarPanel(width = 4,

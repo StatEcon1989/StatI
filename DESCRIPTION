@@ -10,6 +10,7 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     shiny,
+    shinythemes,
     ggplot2,
     rhandsontable
 RoxygenNote: 7.1.2

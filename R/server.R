@@ -108,7 +108,7 @@ server <- function(input, output, session) {
     output$F_hat <- renderPlot(values$f_plot +
                                  ggplot2::geom_segment(ggplot2::aes(x = x, y = -Inf, xend = x, yend = y), color = "darkorange") +
                                  ggplot2::geom_segment(ggplot2::aes(x = -Inf, y = y, xend = x, yend = y), color = "darkorange") +
-                                 ggplot2::geom_label(ggplot2::aes(x = (x - min(values$data$Untergrenze)) / 2, y = y, label = round(y, 2))))
+                                 ggplot2::geom_label(ggplot2::aes(x = (x - abs(min(values$data$Untergrenze))) / 2, y = y, label = round(y, 2))))
   })
   observeEvent(c(values$quantile_plot, input$emp.Quantilfunktion), {
     req(values$quantile_plot)
